@@ -15,11 +15,9 @@ ethbloom = "0.5"
 A basic example how to use this crate:
 
 ```rust
-extern crate ethereum_types;
-extern crate ethbloom;
+extern crate primitives;
 
-use ethereum_types::U256;
-use ethbloom::{Bloom, Input};
+use primitives::{U256, Bloom, BloomInput};
 
 fn main() {
 	let mut val: U256 = 1023.into();
@@ -31,8 +29,8 @@ fn main() {
 
 	let address = [0_u8; 32];
 	let mut my_bloom = Bloom::default();
-	assert!(!my_bloom.contains_input(Input::Raw(&address)));
-	my_bloom.accrue(Input::Raw(&address));
+	assert!(!my_bloom.contains_input(BloomInput::Raw(&address)));
+	my_bloom.accrue(BloomInput::Raw(&address));
 }
 
 ```
@@ -44,6 +42,5 @@ in a `no_std` context, add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-ethereum-types = { version = "0.4", default-features = false }
-ethbloom = { version = "0.5", default-features = false }
+primitives = { version = "0.1.0", default-features = false }
 ```

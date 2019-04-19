@@ -1,25 +1,11 @@
-// Copyright 2015-2017 Parity Technologies
-//
-// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
-// http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
-// <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
-// option. This file may not be copied, modified, or distributed
-// except according to those terms.
-
-//! benchmarking for bigint
-//! should be started with:
-//! ```bash
-//! rustup run nightly cargo bench
-//! ```
-
 #![feature(test)]
 #![feature(asm)]
 
 extern crate test;
-extern crate bigint;
+extern crate primitives;
 
 use test::{Bencher, black_box};
-use bigint::{U256, U512, U128};
+use primitives::{U256, U512, U128};
 
 #[bench]
 fn u256_add(b: &mut Bencher) {

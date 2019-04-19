@@ -7,9 +7,9 @@ license = "MIT"
 
 [dependencies]
 libc = { version = "0.2", default-features = false }
-ethereum-types = { path = "../ethereum-types", default-features = false }
-ethbloom = { path = "../ethbloom", default-features = false }
+primitives = { path = "..", default-features = false }
 fixed-hash = { version = "0.3", default-features = false }
 
 [features]
-default = ["fixed-hash/byteorder"]
+default = ["byteorder"]
+byteorder = ["primitives/byteorder"]

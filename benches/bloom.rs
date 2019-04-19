@@ -3,12 +3,12 @@
 extern crate test;
 extern crate rustc_hex;
 extern crate tiny_keccak;
-extern crate ethbloom;
+extern crate primitives;
 
 use test::Bencher;
 use rustc_hex::FromHex;
 use tiny_keccak::keccak256;
-use ethbloom::{Bloom, Input};
+use primitives::{Bloom, BloomInput as Input};
 
 fn test_bloom() -> Bloom {
 	use std::str::FromStr;

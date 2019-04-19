@@ -1,78 +1,13 @@
-//! 
-//! ```rust
-//! extern crate ethbloom;
-//! #[macro_use] extern crate hex_literal;
-//! use ethbloom::{Bloom, Input};
-//!
-//! fn main() {
-//! 	use std::str::FromStr;
-//! 	let bloom = Bloom::from_str(
-//! 		"00000000000000000000000000000000\
-//!          00000000100000000000000000000000\
-//!          00000000000000000000000000000000\
-//!          00000000000000000000000000000000\
-//!          00000000000000000000000000000000\
-//!          00000000000000000000000000000000\
-//!          00000002020000000000000000000000\
-//!          00000000000000000000000800000000\
-//!          10000000000000000000000000000000\
-//!          00000000000000000000001000000000\
-//!          00000000000000000000000000000000\
-//!          00000000000000000000000000000000\
-//!          00000000000000000000000000000000\
-//!          00000000000000000000000000000000\
-//!          00000000000000000000000000000000\
-//!          00000000000000000000000000000000"
-//!     ).unwrap();
-//! 	let address = hex!("ef2d6d194084c2de36e0dabfce45d046b37d1106");
-//! 	let topic = hex!("02c69be41d0b7e40352fc85be1cd65eb03d40ef8427a0ca4596b1ead9a00e9fc");
-//! 	
-//! 	let mut my_bloom = Bloom::default();
-//! 	assert!(!my_bloom.contains_input(Input::Raw(&address)));
-//! 	assert!(!my_bloom.contains_input(Input::Raw(&topic)));
-//!
-//! 	my_bloom.accrue(Input::Raw(&address));
-//! 	assert!(my_bloom.contains_input(Input::Raw(&address)));
-//! 	assert!(!my_bloom.contains_input(Input::Raw(&topic)));
-//! 	
-//! 	my_bloom.accrue(Input::Raw(&topic));
-//! 	assert!(my_bloom.contains_input(Input::Raw(&address)));
-//! 	assert!(my_bloom.contains_input(Input::Raw(&topic)));
-//! 	assert_eq!(my_bloom, bloom);
-//! 	}
-//! ```
-//!
-
-#![cfg_attr(not(feature="std"), no_std)]
-
-#[cfg(feature="std")]
-extern crate core;
-
-extern crate tiny_keccak;
-#[macro_use]
-extern crate crunchy;
-
-#[macro_use]
-extern crate fixed_hash;
-
-#[cfg(feature="serialize")]
-extern crate ethereum_types_serialize;
-
-#[cfg(feature="serialize")]
-extern crate serde;
-
-#[cfg(test)]
-#[macro_use]
-extern crate hex_literal;
-
-#[cfg(feature="serialize")]
-use serde::{Serialize, Serializer, Deserialize, Deserializer};
-
 use core::{ops, mem};
 use tiny_keccak::keccak256;
 
 #[cfg(feature="std")]
 use core::str;
+
+#[cfg(feature="serialize")]
+use serde::{Serialize, Serializer, Deserialize, Deserializer};
+#[cfg(feature="serialize")]
+use crate::serial;
 
 // 3 according to yellowpaper
 const BLOOM_BITS: u32 = 3;
@@ -227,7 +162,7 @@ impl<'a> BloomRef<'a> {
 		let bloom: Bloom = input.into();
 		self.contains_bloom(&bloom)
 	}
-	
+
 	pub fn contains_bloom<'b, B>(&self, bloom: B) -> bool where BloomRef<'b>: From<B> {
 		let bloom_ref: BloomRef = bloom.into();
 		assert_eq!(self.0.len(), BLOOM_SIZE);
@@ -263,7 +198,7 @@ impl<'a> From<&'a Bloom> for BloomRef<'a> {
 impl Serialize for Bloom {
 	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: Serializer {
 		let mut slice = [0u8; 2 + 2 * BLOOM_SIZE];
-		ethereum_types_serialize::serialize(&mut slice, &self.0, serializer)
+		serial::serialize(&mut slice, &self.0, serializer)
 	}
 }
 
@@ -271,7 +206,7 @@ impl Serialize for Bloom {
 impl<'de> Deserialize<'de> for Bloom {
 	fn deserialize<D>(deserializer: D) -> Result<Self, D::Error> where D: Deserializer<'de> {
 		let mut bytes = [0; BLOOM_SIZE];
-		ethereum_types_serialize::deserialize_check_len(deserializer, ethereum_types_serialize::ExpectedLen::Exact(&mut bytes))?;
+		serial::deserialize_check_len(deserializer, serial::ExpectedLen::Exact(&mut bytes))?;
 		Ok(Bloom(bytes))
 	}
 }
@@ -279,6 +214,7 @@ impl<'de> Deserialize<'de> for Bloom {
 #[cfg(test)]
 mod tests {
 	use super::{Bloom, Input};
+	use hex_literal::{hex, hex_impl};
 
 	#[test]
 	fn it_works() {

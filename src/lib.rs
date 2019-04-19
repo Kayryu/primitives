@@ -1,25 +1,29 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
+extern crate tiny_keccak;
 #[cfg(feature = "std")]
 extern crate core;
 #[macro_use]
 extern crate crunchy;
 #[macro_use]
-extern crate uint as uint_crate;
-#[macro_use]
 extern crate fixed_hash;
-extern crate ethbloom;
+#[macro_use]
+extern crate uint as uint_crate;
 
-#[cfg(feature = "serialize")]
-extern crate ethereum_types_serialize;
 #[cfg(feature = "serialize")]
 extern crate serde;
 
-#[cfg(test)]
-extern crate serde_json;
+#[cfg(test)] extern crate hex_literal;
+#[cfg(test)] extern crate serde_json;
 
+#[macro_use]
+mod macros;
+mod ethbloom;
+#[cfg(feature = "serialize")]
+mod serial;
 mod hash;
 mod uint;
+
 
 pub use uint::{U64, U128, U256, U512};
 pub use hash::{H32, H64, H128, H160, H256, H264, H512, H520};

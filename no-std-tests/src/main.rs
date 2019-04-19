@@ -2,9 +2,7 @@
 #![no_std]
 
 extern crate libc;
-extern crate ethereum_types;
-extern crate ethbloom;
-extern crate fixed_hash;
+extern crate primitives;
 
 #[start]
 fn start(_argc: isize, _argv: *const *const u8) -> isize {

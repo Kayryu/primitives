@@ -21,7 +21,7 @@ fn forwards_with_crunchy(b: &mut Bencher) {
 	b.iter(|| {
 		let other_data = random_data();
 		unroll! {
-			for i in 0..255 {
+			for i in 0..64 {
 				data[i] |= other_data[i];
 			}
 		}
@@ -36,8 +36,8 @@ fn backwards_with_crunchy(b: &mut Bencher) {
 	b.iter(|| {
 		let other_data = random_data();
 		unroll! {
-			for i in 0..255 {
-				data[255-i] |= other_data[255-i];
+			for i in 0..64 {
+				data[64-i] |= other_data[64-i];
 			}
 		}
 	});

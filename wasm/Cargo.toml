@@ -1,0 +1,24 @@
+[package]
+name = "wasm"
+version = "0.1.0"
+authors = ["kayryu <lukayryu@gmail.com>"]
+edition = "2018"
+
+[lib]
+name = "primitives_wasm"
+crate-type = ["cdylib"]
+
+[dependencies]
+primitives = { path = "..", default-features = false }
+
+[features]
+default = ["byteorder"]
+std = ["primitives/std"]
+byteorder = ["primitives/byteorder"]
+
+[profile.release]
+panic = "abort"
+lto = true
+
+[workspace]
+members= []
