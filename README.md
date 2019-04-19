@@ -8,8 +8,7 @@ To add this crate to your project, add the following in `Cargo.toml`
 
 ```toml
 [dependencies]
-ethereum-types = "0.4"
-ethbloom = "0.5"
+primitives = { git = "https://github.com/Kayryu/primitives.git" , branch="develop" }
 ```
 
 A basic example how to use this crate:
